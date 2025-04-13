@@ -8,8 +8,8 @@
  *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  *  License for the specific language governing permissions and limitations under
  *  the License.
  */
@@ -20,9 +20,12 @@ import io.cdap.wrangler.TestingRig;
 import io.cdap.wrangler.api.CompileException;
 import io.cdap.wrangler.api.CompileStatus;
 import io.cdap.wrangler.api.Compiler;
+import io.cdap.wrangler.api.Directive;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -214,5 +217,29 @@ public class RecipeCompilerTest {
     CompileStatus compile = TestingRig.compile(recipe);
     Set<String> loadableDirectives = compile.getSymbols().getLoadableDirectives();
     Assert.assertEquals(4, loadableDirectives.size());
+  }
+
+  // ✅ Custom test for valid aggregate-stats directive
+  @Test
+  public void testValidAggregateStatsDirective() throws Exception {
+    String[] directives = {
+      "aggregate-stats :size_col :time_col :total_size :total_time 'average' 'MB' 'seconds';"
+    };
+
+    RecipeCompiler compiler = new RecipeCompiler();
+    List<Directive> compiled = compiler.compile(Arrays.asList(directives));
+    Assert.assertEquals(1, compiled.size());
+    Assert.assertEquals("aggregate-stats", compiled.get(0).getClass().getSimpleName().toLowerCase());
+  }
+
+  // ❌ Custom test for invalid aggregate-stats syntax
+  @Test(expected = CompileException.class)
+  public void testInvalidAggregateStatsDirective() throws Exception {
+    String[] directives = {
+      "aggregate-stats size_col time_col total_size;" // Invalid: missing colons and params
+    };
+
+    RecipeCompiler compiler = new RecipeCompiler();
+    compiler.compile(Arrays.asList(directives)); // Should throw CompileException
   }
 }

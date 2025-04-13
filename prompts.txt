@@ -1,0 +1,12 @@
+List of prompts used during development:
+
+1. What should I do after completing grammar updates for Wrangler?
+2. How to implement the ByteSize.java and TimeDuration.java classes for unit parsing?
+3. How do I modify the Wrangler grammar to support BYTE_SIZE and TIME_DURATION tokens?
+4. How to create and register a new directive (aggregate-stats) in Wrangler?
+5. What steps do I follow for adding unit tests for new token types?
+6. How do I resolve Maven checkstyle and RAT plugin errors?
+7. How to confirm all changes are correctly implemented before packaging?
+8. What should be included in the README for new directive usage?
+
+Note: All prompts were used with ChatGPT for assistance with code logic, debugging errors, and ensuring that all assignment requirements were met.

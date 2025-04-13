@@ -8,8 +8,8 @@
  *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  *  License for the specific language governing permissions and limitations under
  *  the License.
  */
@@ -25,7 +25,10 @@ import io.cdap.wrangler.api.DirectiveNotFoundException;
 import io.cdap.wrangler.api.DirectiveParseException;
 import io.cdap.wrangler.api.RecipeException;
 import io.cdap.wrangler.api.RecipeParser;
+import io.cdap.wrangler.api.parser.Token;
 import io.cdap.wrangler.api.parser.UsageDefinition;
+import io.cdap.wrangler.api.parser.ByteSize;
+import io.cdap.wrangler.api.parser.TimeDuration;
 import io.cdap.wrangler.registry.DirectiveInfo;
 import io.cdap.wrangler.registry.DirectiveRegistry;
 
@@ -99,5 +102,33 @@ public class GrammarBasedParser implements RecipeParser {
     } catch (Exception e) {
       throw new RecipeException(e.getMessage(), e);
     }
+  }
+
+  // New visit methods for ByteSize and TimeDuration
+  public Token visitByteSizeArg(String text) {
+    return new ByteSize(text);
+  }
+
+  public Token visitTimeDurationArg(String text) {
+    return new TimeDuration(text);
+  }
+
+  public Token visitValue(String text) {
+    if (isByteSize(text)) {
+      return visitByteSizeArg(text);
+    } else if (isTimeDuration(text)) {
+      return visitTimeDurationArg(text);
+    }
+    return new Token(text); // default Token
+  }
+
+  private boolean isByteSize(String text) {
+    String upper = text.toUpperCase();
+    return upper.matches("\\d+(KB|MB|GB|TB)");
+  }
+
+  private boolean isTimeDuration(String text) {
+    String lower = text.toLowerCase();
+    return lower.matches("\\d+(ms|s|m|h|d)");
   }
 }

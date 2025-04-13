@@ -46,7 +46,7 @@ recipe
  ;
 
 statements
- :  ( Comment | macro | directive ';' | pragma ';' | ifStatement)*
+ :  ( Comment | macro | directive ';' | pragma ';' | ifStatement)* 
  ;
 
 directive
@@ -140,7 +140,7 @@ numberRange
  ;
 
 value
- : String | Number | Column | Bool
+ : String | Number | Column | Bool | BYTE_SIZE | TIME_DURATION
  ;
 
 ecommand
@@ -206,8 +206,8 @@ Or       : '||';
 And      : '&&';
 Equals   : '==';
 NEquals  : '!=';
-GTEquals : '>=';
-LTEquals : '<=';
+GTEquals : '>='; 
+LTEquals : '<='; 
 Match    : '=~';
 NotMatch : '!~';
 QuestionColon : '?:';
@@ -215,36 +215,36 @@ StartsWith : '=^';
 NotStartsWith : '!^';
 EndsWith : '=$';
 NotEndsWith : '!$';
-PlusEqual : '+=';
-SubEqual : '-=';
-MulEqual : '*=';
-DivEqual : '/=';
-PerEqual : '%=';
-AndEqual : '&=';
-OrEqual  : '|=';
-XOREqual : '^=';
+PlusEqual : '+='; 
+SubEqual : '-='; 
+MulEqual : '*='; 
+DivEqual : '/='; 
+PerEqual : '%='; 
+AndEqual : '&='; 
+OrEqual  : '|='; 
+XOREqual : '^='; 
 Pow      : '^';
-External : '!';
+External : '!'; 
 GT       : '>';
-LT       : '<';
-Add      : '+';
-Subtract : '-';
-Multiply : '*';
-Divide   : '/';
-Modulus  : '%';
-OBracket : '[';
-CBracket : ']';
-OParen   : '(';
-CParen   : ')';
-Assign   : '=';
-Comma    : ',';
-QMark    : '?';
-Colon    : ':';
-Dot      : '.';
-At       : '@';
-Pipe     : '|';
-BackSlash: '\\';
-Dollar   : '$';
+LT       : '<'; 
+Add      : '+'; 
+Subtract : '-'; 
+Multiply : '*'; 
+Divide   : '/'; 
+Modulus  : '%'; 
+OBracket : '['; 
+CBracket : ']'; 
+OParen   : '('; 
+CParen   : ')'; 
+Assign   : '='; 
+Comma    : ','; 
+QMark    : '?'; 
+Colon    : ':'; 
+Dot      : '.'; 
+At       : '@'; 
+Pipe     : '|'; 
+BackSlash: '\\'; 
+Dollar   : '$'; 
 Tilde    : '~';
 
 
@@ -310,4 +310,22 @@ fragment Int
 
 fragment Digit
  : [0-9]
- ;
+ ;  
+
+// Add these at the end, just before Comment rule
+
+BYTE_SIZE
+  : Int ('.' Digit*)? BYTE_UNIT
+  ;
+
+TIME_DURATION
+  : Int ('.' Digit*)? TIME_UNIT
+  ;
+
+fragment BYTE_UNIT
+  : [kK][bB]? | [mM][bB]? | [gG][bB]? | [tT][bB]? | [pP][bB]?
+  ;
+
+fragment TIME_UNIT
+  : [mM][sS] | [sS] | [mM][iI][nN] | [hH] | [dD]
+  ;
